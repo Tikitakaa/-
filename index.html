@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>运筹学最短路算法</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+	<header>
+		<div id="header_left">
+			<p>网络模型最短路问题算法</p>
+			<p>——以canvas绘图实现</p>
+		</div>
+		<div id="header_right">
+			<ul>			
+				<li><a href="">Dijkstra简介</a></li>
+				<li><a href="">Floyd简介</a></li>
+				<li style="color:white">首 页</li>
+			</ul>
+		</div>
+	</header>
+	<div class="container">
+		<div class="content">
+			<div id="cont_left">
+				<canvas id="draw_area" width="770" height="500">
+					您的浏览器不支持canvas标签,请用较新的浏览器！
+				</canvas>
+			</div>
+			<div id="cont_right">
+				<div id="cont_right_top">
+					<div id="nodeinfo">
+						顶点数量：<span id="nodenum">0</span> 边数量：<span id="pathnum">0</span>
+					</div>	
+					<div id="operinfo">
+						<p>当前操作：<span id="curoper">设置路线</span></p>
+						<p><span id="startnode"></span></p>
+						<p><span id="endnode"></span></p>
+					</div> 
+					<div id="queryrlt">
+						<p>最短距离：<span id="minlength">0</span></p>
+						<p>最短路径：<span id="minpaths"></span></p>
+					</div>			
+				</div>
+				<div id="cont_right_bottom">
+					<form action="javascript:;">
+						<p id="drawnodeinfo" style="margin-bottom:0px;">请输入 景点1 - 景点2 路径长度：</p>
+						<p style="margin-top:5px;">
+							<input style="width:200px;" type="text" id="pathlength">
+							<select name="单双方向" id="setdir">
+									<option value="">选择单双方向</option>
+									<option value="single">单向</option>
+									<option value="double">双向</option>
+							</select>
+							<button id="subbtn">确定</button>
+						</p>					
+					</form>
+				</div>			
+			</div>
+			<div id="menu">
+				<button class="btn_menu" id="addnode">添加结点</button>
+				<button class="btn_menu" id="resetnode">重置结点</button>
+				<button class="btn_menu" id="setlines">设置路线</button>
+				<!-- 选择节点和最短路径查询放在一起，旁边放上算法选择 -->
+				<button class="btn_menu" id="selnode">选择结点</button>
+				<select class ="btn_menu" name="选择算法" id="setalgo">
+					<option value="">选择算法</option>
+					<option value="dijkstra">Dijkstra</option>
+					<option value="floyd">Floyd</option>
+				</select>
+				<button class="btn_menu" id="querypaths">最短路径查询</button>
+			</div>
+		</div>
+	</div>
+	<footer>
+		<div class="footer_cont">			
+			<div class="f_content">
+				<p>课程展示</p>
+				<p>网络模型最短路问题算法</p>
+				<p>版本1</p>
+				<p>完成时间：2019.10.27</p>
+			</div>
+			<div class="f_content" style="text-align:right">
+				<p> &nbsp;</p>
+				<p> &nbsp;</p>
+				<p> &nbsp;</p>
+				<p style="font-size:17px;">Copyright &copy;文产中心 All Rights Reserved.</p>
+			</div>
+		</div>
+	</footer>
+	<script src="js/index.js"></script>
+</body>
+</html>
