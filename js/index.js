@@ -282,13 +282,6 @@ function setLines() {
 			$("cont_right_bottom").style.display = "block";
 			//文本框获取路径长度值
 			$("pathlength").focus();
-			//设置路径有无方向性
-			/*
-			if ($("setdir").value) {
-				paths[pathNum].pathDirection = $("setdir").value;
-			}
-			*/
-			//确定，绘制路线
 			$("subbtn").onclick = drawPath;
 		}
 	}
@@ -308,6 +301,14 @@ function drawPath() {
 		can.moveTo(sights[startSight - 1].XPos, sights[startSight - 1].YPos);
 		//到达位置为结束节点的x,y坐标
 		can.lineTo(sights[endSight - 1].XPos, sights[endSight - 1].YPos);
+		//画箭头
+		if (paths[pathNum].pathDirection == "single"){
+			can.moveTo(sights[endSight - 1].XPos, sights[endSight - 1].YPos);
+			can.lineTo(sights[endSight - 1].XPos-13, sights[endSight - 1].YPos+7.5);
+			can.moveTo(sights[endSight - 1].XPos, sights[endSight - 1].YPos);
+			can.lineTo(sights[endSight - 1].XPos-13, sights[endSight - 1].YPos-7.5);
+		}
+		
 		//在路径的中点标记路径长度
 		var textXPos =
 			(sights[startSight - 1].XPos + sights[endSight - 1].XPos) / 2;
@@ -435,23 +436,12 @@ function createMatrix() {
 		} else if (paths[i].pathDirection == "double") {
 			G[paths[i].startNode - 1][paths[i].endNode - 1] = paths[i].pathLength;
 			G[paths[i].endNode - 1][paths[i].startNode - 1] = paths[i].pathLength;
-		} else {
+		}
+		/*else {
 			G[paths[i].startNode - 1][paths[i].endNode - 1] = paths[i].pathLength;
 			G[paths[i].endNode - 1][paths[i].startNode - 1] = paths[i].pathLength;
-		}
+		}*/
 	}
-	//前驱矩阵
-	/*for (var i = 0; i < nodeNum; i++) {
-		P[i] = new Array();
-		for (var j = 0; j < nodeNum; j++) {
-			if (G[i][j] != MAX_PATH_LENGTH) {
-				P[i][j] = i;
-			} else {
-				P[i][j] = -1;
-			}
-		}
-	}*/
-
 }
 
 //Dijkstra算法求最短路径
@@ -548,37 +538,6 @@ function Floyd() {
 	}
 }
 
-//Floyd算法求最短路径
-//var G_copy = new Array();
-//var P_copy = new Array();
-/*
-function Floyd() {
-	//var n = G && G.length;
-	//var m = n && G[0].length;
-	//if (m && n && m === n) {
-	for(var i = 0;i < n;i++){
-		G_copy[i] = [];
-		for (var j = 0; j < n; j++) {
-            G_copy[i][j] = G[i][j];
-        }
-	}
-	G_copy = G.slice(0);
-	P_copy = P.slice(0);
-	for (var k = 0; k < n; k++) {
-		for (var i = 0; i < n; i++) {
-			if (i != k){
-				for (var j = 0; j < n; j++) {
-					if (i != j && j != k){
-						G_copy[i][j] = Math.min(G_copy[i][k] + G_copy[k][j],G_copy[i][j]);
-						P_copy[i][j] = k;
-					}
-				}
-			}
-			
-		}
-	}
-}*/
-
 //Dijkstra查找最短路径
 function dij_searchPaths(Prev, v, u) {
 	var que = new Array(); //保存最短路线
@@ -620,11 +579,12 @@ function queryPaths() {
 
 	if ($("setalgo").value == "dijkstra") {
 		Dijkstra(nodeNum, START - 1, G);
-		var rlt = dij_searchPaths(prev, START - 1, END - 1);
-		if (dist[END - 1] >= MAX_PATH_LENGTH) {
+		if (dist[END - 1] == MAX_PATH_LENGTH) {
 			$("minlength").innerHTML = "两结点之间没有线路";
 			$("minpaths").innerHTML = "";
 		} else {
+			var rlt = dij_searchPaths(prev, START - 1, END - 1);
+
 			$("minlength").innerHTML = dist[END - 1];
 			can.beginPath();
 			can.lineWidth = "3";
@@ -637,10 +597,10 @@ function queryPaths() {
 					can.lineTo(sights[rlt[i - 1]].XPos, sights[rlt[i - 1]].YPos);
 					can.moveTo(sights[rlt[i - 1]].XPos, sights[rlt[i - 1]].YPos);
 				}
+				can.stroke();
+				can.closePath();
+				//redrawNode();
 			}
-			can.stroke();
-			can.closePath();
-			//redrawNode();
 		}
 	} else if ($("setalgo").value == "floyd") {
 		createMGraph();
