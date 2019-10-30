@@ -260,10 +260,10 @@ function setLines() {
 			}
 			*/
 			//判断两点间路径是否已经设置
-			if (isPathExist(startSight, selNode)) {
-				alert("该路径已经设置！");
-				return false;
-			}
+			//if (isPathExist(startSight, selNode)) {
+			//alert("该路径已经设置！");
+			//return false;
+			//}
 			//设置结束节点
 			endSight = selNode;
 			//将路径的结束点属性设置为选上的节点
@@ -302,13 +302,36 @@ function drawPath() {
 		//到达位置为结束节点的x,y坐标
 		can.lineTo(sights[endSight - 1].XPos, sights[endSight - 1].YPos);
 		//画箭头
-		if (paths[pathNum].pathDirection == "single"){
+
+		if (paths[pathNum].pathDirection == "single") {
 			can.moveTo(sights[endSight - 1].XPos, sights[endSight - 1].YPos);
-			can.lineTo(sights[endSight - 1].XPos-13, sights[endSight - 1].YPos+7.5);
-			can.moveTo(sights[endSight - 1].XPos, sights[endSight - 1].YPos);
-			can.lineTo(sights[endSight - 1].XPos-13, sights[endSight - 1].YPos-7.5);
+			if ((sights[endSight - 1].XPos > sights[startSight - 1].XPos) && (sights[endSight - 1].YPos < sights[startSight - 1].YPos)) {
+				var theta = Math.atan((sights[startSight - 1].YPos - sights[endSight - 1].YPos) / (sights[endSight - 1].XPos - sights[startSight - 1].XPos));
+				can.lineTo(sights[endSight - 1].XPos - 15, sights[endSight - 1].YPos);
+				can.moveTo(sights[endSight - 1].XPos, sights[endSight - 1].YPos);
+				can.lineTo(sights[endSight - 1].XPos - 15 * Math.sin(Math.PI / 2 - 2 * theta), sights[endSight - 1].YPos + 15 * Math.cos(Math.PI / 2 - 2 * theta));
+			} else if ((sights[endSight - 1].XPos < sights[startSight - 1].XPos) && (sights[endSight - 1].YPos < sights[startSight - 1].YPos)) {
+				var theta = Math.atan((sights[startSight - 1].YPos - sights[endSight - 1].YPos) / (sights[startSight - 1].XPos - sights[endSight - 1].XPos));
+				can.lineTo(sights[endSight - 1].XPos + 15, sights[endSight - 1].YPos);
+				can.moveTo(sights[endSight - 1].XPos, sights[endSight - 1].YPos);
+				can.lineTo(sights[endSight - 1].XPos + 15 * Math.sin(Math.PI / 2 - 2 * theta), sights[endSight - 1].YPos + 15 * Math.cos(Math.PI / 2 - 2 * theta));
+			} else if ((sights[endSight - 1].XPos < sights[startSight - 1].XPos) && (sights[endSight - 1].YPos > sights[startSight - 1].YPos)) {
+				var theta = Math.atan((sights[endSight - 1].YPos - sights[startSight - 1].YPos) / (sights[startSight - 1].XPos - sights[endSight - 1].XPos));
+				can.lineTo(sights[endSight - 1].XPos + 15, sights[endSight - 1].YPos);
+				can.moveTo(sights[endSight - 1].XPos, sights[endSight - 1].YPos);
+				can.lineTo(sights[endSight - 1].XPos + 15 * Math.sin(Math.PI / 2 - 2 * theta), sights[endSight - 1].YPos - 15 * Math.cos(Math.PI / 2 - 2 * theta));
+			} else if ((sights[endSight - 1].XPos > sights[startSight - 1].XPos) && (sights[endSight - 1].YPos > sights[startSight - 1].YPos)) {
+				var theta = Math.atan((sights[endSight - 1].YPos - sights[startSight - 1].YPos) / (sights[endSight - 1].XPos - sights[startSight - 1].XPos));
+				can.lineTo(sights[endSight - 1].XPos - 15, sights[endSight - 1].YPos);
+				can.moveTo(sights[endSight - 1].XPos, sights[endSight - 1].YPos);
+				can.lineTo(sights[endSight - 1].XPos - 15 * Math.sin(Math.PI / 2 - 2 * theta), sights[endSight - 1].YPos - 15 * Math.cos(Math.PI / 2 - 2 * theta));
+			} else {
+				can.lineTo(sights[endSight - 1].XPos - 13, sights[endSight - 1].YPos + 7.5);
+				can.moveTo(sights[endSight - 1].XPos, sights[endSight - 1].YPos);
+				can.lineTo(sights[endSight - 1].XPos - 13, sights[endSight - 1].YPos - 7.5);
+			}
 		}
-		
+
 		//在路径的中点标记路径长度
 		var textXPos =
 			(sights[startSight - 1].XPos + sights[endSight - 1].XPos) / 2;
@@ -555,14 +578,14 @@ function dij_searchPaths(Prev, v, u) {
 
 	return que;
 }
-var rlt_2 = new Array();
+//var rlt_2 = new Array();
 
-function flo_searchPaths(i, j) {
+function flo_searchPaths(i, j, r) {
 	if (Pathmatirx[i][j] == -1) {
-		rlt_2.push(j + 1);
+		r.push(j + 1);
 	} else {
-		flo_searchPaths(i, Pathmatirx[i][j]);
-		flo_searchPaths(Pathmatirx[i][j], j);
+		flo_searchPaths(i, Pathmatirx[i][j], r);
+		flo_searchPaths(Pathmatirx[i][j], j, r);
 	}
 }
 
@@ -575,6 +598,7 @@ function queryPaths() {
 	}
 	setOperationInfo("最短路径查询", START, END);
 	$("queryrlt").style.display = "block";
+	$("minpaths").innerHTML = "";
 	createMatrix();
 
 	if ($("setalgo").value == "dijkstra") {
@@ -610,14 +634,16 @@ function queryPaths() {
 			$("minpaths").innerHTML = "";
 		} else {
 			$("minlength").innerHTML = ShortPathTable[START - 1][END - 1];
+			var rlt_2 = new Array();
 			rlt_2.push(START);
-			flo_searchPaths(START - 1, END - 1);
+			flo_searchPaths(START - 1, END - 1, rlt_2);
 
 			can.beginPath();
 			can.lineWidth = "3";
 			can.strokeStyle = "rgb(0, 255, 0)";
 			for (var i = 0; i < rlt_2.length; i++) {
 				$("minpaths").innerHTML += rlt_2[i] + ", ";
+
 				if (i == 0) {
 					can.moveTo(sights[rlt_2[i] - 1].XPos, sights[rlt_2[i] - 1].YPos);
 				} else {
